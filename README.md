@@ -1,7 +1,10 @@
 # nagios-plugins
 [ ![License] [license-image] ] [license]
 
-This repository contains various scripts than I wrote for [Nagios Core].
+This repository contains various scripts that [eddimas] wrote for [Nagios Core].
+
+I only copied and modified to fit my own needs.
+
 Many of them were written from small to medium monitoring environments. And are based in three main concepts:
 
 * **Avoid to install** anything on the remote client side.
