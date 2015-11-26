@@ -43,7 +43,7 @@
 
 j=0; ok=0
 warn=0; crit=0
-COMMAND='/bin/df -PH'
+COMMAND='/bin/df -PHl'
 TEMP_FILE="/tmp/df.$RANDOM.log"
 
 ## Help funcion 
@@ -55,8 +55,9 @@ Usage :
         OPTION          DESCRIPTION
         ----------------------------------
         -h              Help
-        -l [STRING]      Remote user
+        -l [STRING]     Remote user
         -H [STRING]     Host name
+	-x [STRING]     Exclude a list separated by commas of file system types
         -w [VALUE]      Warning Threshold
         -c [VALUE]      Critical Threshold
 
@@ -66,17 +67,18 @@ END
 }
 
 ## Validating and setting the variables and the input args
-if [ $# -ne 8 ]
+if [ $# -lt 8 ]
 then
         help;
         exit 3;
 fi
 
-while getopts "l:H:n:w:c:" OPT
+while getopts "l:H:x:n:w:c:" OPT
 do
         case $OPT in
         l) USERNAME="$OPTARG" ;;
         H) HOSTNAME="$OPTARG" ;;
+        x) EXCLUDE="$OPTARG" ;;
         w) WARN="$OPTARG" ;;
         c) CRIT="$OPTARG" ;;
         *) help ;;
@@ -84,10 +86,18 @@ do
 done
 
 ## Sending the ssh request command and store the result into local log file
+IFS_OLD=$IFS
+IFS=","
+for E in $EXCLUDE
+do
+	COMMAND="$COMMAND -x $E"
+done
+IFS=$IFS_OLD
+
 SSH_COMMAND="`ssh -l $USERNAME $HOSTNAME -C $COMMAND`"
 echo "$SSH_COMMAND"  > $TEMP_FILE.tmp
-echo "`cat $TEMP_FILE.tmp | grep -v Used | grep -v opt`" > $TEMP_FILE
-EQP_FS="`cat $TEMP_FILE | grep -v Used | grep -v opt | wc -l`"  # determine how many FS are in the server
+echo "`cat $TEMP_FILE.tmp | grep -v Used|grep -v Montado`" > $TEMP_FILE
+EQP_FS="`cat $TEMP_FILE | grep -v Used|grep -v Montado | wc -l`"  # determine how many FS are in the server
 
 
 FILE=$TEMP_FILE                 # read $file using file descriptors
