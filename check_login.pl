@@ -17,7 +17,7 @@ use Net::OpenSSH;
 my $num_args = $#ARGV + 1;
 if ($num_args != 3) {
     print "Usage: check_login.pl username password host\n";
-    exit;
+    exit 3;
 }
 
 my $username=$ARGV[0];
@@ -27,6 +27,9 @@ my $host=$ARGV[2];
 my $ssh = Net::OpenSSH->new("$username:$password\@$host",timeout=>5);
 if ($ssh->error) {
   print $ssh->error."\n";
-  exit 3;
+  exit 2;
 }
-print "Login sucessfull\n"
+else {
+        print "Login sucessfull\n";
+        exit 0;
+}
