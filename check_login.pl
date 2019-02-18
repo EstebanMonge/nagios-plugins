@@ -9,6 +9,7 @@
 # You can install it from optional packages for RHEL 7 or
 # with libio-pty-perl on Debian based systems
 # Esteban Monge: estebanmonge@riseup.net
+# https://github.com/EstebanMonge/nagios-plugins
 ############################################################
 use strict;
 use warnings;

@@ -9,6 +9,8 @@
 #as threshold. Warning for load equal to cpus reported and
 #critical for greater than it. The plugin takes loadavg 15
 #minutes metric only and compare it with thresholds.
+# Esteban Monge estebanmonge@riseup.net
+# https://github.com/EstebanMonge/nagios-plugins
 ##########################################################
 
 

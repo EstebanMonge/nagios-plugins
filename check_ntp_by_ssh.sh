@@ -2,6 +2,7 @@
 ##########################################################
 # Plugin to check NTP and Chrony via SSH to avoid use of agents
 # Esteban Monge: estebanmonge@riseup.net
+# https://github.com/EstebanMonge/nagios-plugins
 ############################################################
 
 
