@@ -43,7 +43,7 @@
 
 j=0; ok=0
 warn=0; crit=0
-COMMAND="/bin/df -PH"
+COMMAND="/bin/df -PHlx tmpfs"
 TEMP_FILE="/var/tmp/df.$RANDOM"
 
 ## Help funcion
