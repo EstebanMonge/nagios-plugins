@@ -13,7 +13,8 @@ Usage :
         $PROGNAME [Hostname or IP] [NTP Client]
         OPTION          DESCRIPTION
         ----------------------------------
-        NTP Client      It can be 'chrony' or 'ntp'
+        NTP Client      It can be 'chrony' or 'ntp' for Linux or 'aix' for... AIX
+                        AIX require sudo or root permissions
         ----------------------------------
 END
 }
@@ -34,12 +35,15 @@ case $ntp_client in
         ntp)
                 output=$(ssh $host 'ntpstat |grep synchronised')
                 ;;
+        aix)
+		output=$(ssh $host 'sudo ntpq -pn | grep -F "*" | awk "{print \$1,\"offset\",\$9}"|cut -d "*" -f 2')
+		;; 
         *) help
                 exit 3
                 ;;
 esac
 
-if [[ $output == *"Normal"* || $output == *"synchronised to NTP server"* ]]
+if [[ $output == *"Normal"* || $output == *"synchronised to NTP server"* || ! -z "$output" ]]
 then
         echo "OK - $output"
         exit 0
