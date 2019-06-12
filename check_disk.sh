@@ -43,14 +43,13 @@
 
 j=0; ok=0
 warn=0; crit=0
-COMMAND="/bin/df -PHlx tmpfs"
 TEMP_FILE="/var/tmp/df.$RANDOM"
 
 ## Help funcion
 help() {
   cat << END
 Usage :
-        check_disk.sh -l [STRING] -H [STRING] -w [VALUE] -c [VALUE]
+        check_disk.sh -l [STRING] -H [STRING] -w [VALUE] -c [VALUE] -o [STRING]
 
         OPTION          DESCRIPTION
         ----------------------------------
@@ -59,6 +58,7 @@ Usage :
         -H [STRING]     Host name
         -w [VALUE]      Warning Threshold
         -c [VALUE]      Critical Threshold
+        -o [STRING]     aix or linux
 
         ----------------------------------
 Note : [VALUE] must be an integer.
@@ -66,24 +66,34 @@ END
 }
 
 ## Validating and setting the variables and the input args
-if [ $# -ne 8 ]
+if [ $# -ne 10 ]
 then
   help;
   exit 3;
 fi
 
-while getopts "l:H:n:w:c:" OPT
+while getopts "l:H:n:w:c:o:" OPT
 do
   case $OPT in
     l) USERNAME="$OPTARG" ;;
     H) HOSTNAME="$OPTARG" ;;
     w) WARN="$OPTARG" ;;
     c) CRIT="$OPTARG" ;;
+    o) OS="$OPTARG";;
     *) help ;;
   esac
 done
 
 get_data () {
+  case $OS in
+  linux)
+        COMMAND="/bin/df -PHlx tmpfs -x devtmpfs"
+        ;;
+  aix)  COMMAND="/usr/bin/df -gPT local"
+        ;;
+  *)    echo "Invalid OS"
+        ;;
+ esac
   ## Sending the ssh request command and store the result into local log file
   ssh -l ${USERNAME} ${HOSTNAME} -C ${COMMAND} > ${TEMP_FILE}.tmp
   cat ${TEMP_FILE}.tmp | grep -v Used | grep -v '0 0 0'|grep -ve '- - -' > ${TEMP_FILE}
