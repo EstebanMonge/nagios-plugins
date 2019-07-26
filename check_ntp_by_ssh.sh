@@ -7,7 +7,7 @@
 
 
 help(){
-PROGNAME=`basename $0`
+PROGNAME=$(basename $0)
 cat << END
 Usage :
         $PROGNAME [Hostname or IP] [NTP Client]
