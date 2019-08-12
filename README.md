@@ -1,7 +1,7 @@
 # nagios-plugins
-[ ![License] [license-image] ] [license]
+[license]
 
-This repository contains various scripts that [EstebanMonge] and eddimas wrote for [Nagios Core].
+This repository contains various scripts that EstebanMonge and eddimas wrote for [Nagios Core].
 
 I only copied and modified to fit my own needs.
 
