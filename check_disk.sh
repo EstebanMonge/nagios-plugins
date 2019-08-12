@@ -142,7 +142,7 @@ done
 
 ## Just validate and adjust the nagios output
 if [ "$ok" -eq "$EQP_FS" -a "$warn" -eq 0 -a "$crit" -eq 0 ]; then
-  echo "OK. DISK STATS: ${DATA[@]}"
+  echo "OK. DISK STATS: ${DATA[@]}| ${perf[@]}"
   exit 0
 elif [ "$warn" -gt 0 -a "$crit" -eq 0 ]; then
   echo "WARNING. DISK STATS: ${DATA[@]}_ Warning ${WARN_DISKS[@]}| ${perf[@]}"
