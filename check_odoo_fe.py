@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import xmlrpc.client
 import datetime
@@ -37,12 +37,12 @@ class Odoo():
             , 'account.invoice'
             , 'read'
             , [invoice_id]
-            , {"fields": ["date_invoice","number","partner_id","sequence"]})
+            , {"fields": ["date_invoice","partner_id","sequence"]})
         return result
 
 # Funcion para obtener las facturas segun estado
-    def invoiceCheck(self, stateTributacion):
-        odoo_filter = [[("state_tributacion", "=", stateTributacion)]]
+    def invoiceCheck(self, stateTributacion,invoiceDate):
+        odoo_filter = [[("state_tributacion", "=", stateTributacion),("date_invoice","=",invoiceDate)]]
         invoice_id = self.ODOO_OBJECT.execute_kw(
             self.DATA
             , self.UID
@@ -52,7 +52,8 @@ class Odoo():
             , odoo_filter)
         return invoice_id
     def help(self):
-        print 'Usage: check_odoo_fe.py -d database -m mail -s password -p port -u url'
+        print('Usage: check_odoo_fe.py -d database -m mail -s password -p port -u url -i invoiceState -t numberDays')
+        sys.exit(3)
 
 def main(argv):
     od = Odoo()
@@ -60,18 +61,16 @@ def main(argv):
 # Si no estan todos los argumentos salir
     if len(sys.argv) < 10:
        od.help()
-       sys.exit(2)
     try:
-       opts,args=getopt.getopt(argv,"hd:m:s:p:u:")
+       opts,args=getopt.getopt(argv,"hd:m:s:p:u:i:")
     except getopt.GetoptError:
        od.help()
-       sys.exit(2)
 
 # Obtener todos los argumentos
+    invoiceState = 'rechazado'
     for opt, arg in opts:
         if opt == '-h':
             od.help()
-            sys.exit(2)
         elif opt == '-d':
             database = arg
         elif opt == '-m':
@@ -82,15 +81,25 @@ def main(argv):
             port = arg
         elif opt == '-u':
             url = arg
+        elif opt == '-i':
+            invoiceState = arg
 
     od.authenticateOdoo(database,mail,secret,port,url)
 
-    # Buscar las facturase segun estado
-    invoice_id = od.invoiceCheck("rechazado")
+    # Buscar las facturase segun estado y fecha
+    yesterday = datetime.date.today() - datetime.timedelta(days = 1)
+    invoice_id = od.invoiceCheck(invoiceState,yesterday.strftime('%Y-%m-%d'))
 
     # Leer detalle de facturas
-    result = od.invoiceRead(invoice_id)
-    print(result)
+    if len(invoice_id) == 0:
+        print('Pura vida! No invoices in state '+invoiceState+' was found')
+        sys.exit(0)
+    else:
+        result = od.invoiceRead(invoice_id)
+        print('You have '+str(len(invoice_id))+' invoices '+invoiceState+' from Hacienda yesterday')
+        for x in result:
+            print('Consectutive: '+str(x['sequence'])+'. Client: '+str(x['partner_id'][1])+'. Date: '+str(x['date_invoice']))
+        sys.exit(2)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
