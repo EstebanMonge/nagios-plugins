@@ -52,7 +52,7 @@ class Odoo():
             , odoo_filter)
         return invoice_id
     def help(self):
-        print('Usage: check_odoo_fe.py -d database -m mail -s password -p port -u url -i invoiceState -t numberDays')
+        print('Usage: check_odoo_fe.py -d database -m mail -s password -p port -u url -i invoiceState')
         sys.exit(3)
 
 def main(argv):
