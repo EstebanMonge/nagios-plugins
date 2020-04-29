@@ -29,7 +29,7 @@ class Odoo():
 
 # Funcion para obtener las ordenes del pos segun estado
     def posorderCheck(self, stateOrder):
-        odoo_filter = [[("state_tributacion", '!=', 'aceptado'),("state_tributacion", '!=', 'rechazado'),("state_tributacion", '!=', 'no_aplica'),("state_tributacion", '!=', 'error'),("state_tributacion", '!=', 'rejected'),("state_tributacion", '!=', 'no_encontrado'),("state_tributacion", '!=', 'firma_invalida'),("state_tributacion", '!=', 'procesando')]]
+        odoo_filter = [[("state_tributacion", '!=', 'aceptado'),("state_tributacion", '!=', 'rechazado'),("state_tributacion", '!=', 'no_aplica'),("state_tributacion", '!=', 'error'),("state_tributacion", '!=', 'rejected'),("state_tributacion", '!=', 'no_encontrado'),("state_tributacion", '!=', 'firma_invalida'),("state_tributacion", '!=', 'procesando'),("state_tributacion", '!=', 'invalido')]]
         posorder_id = self.ODOO_OBJECT.execute_kw(
             self.DATA
 	    , self.UID
